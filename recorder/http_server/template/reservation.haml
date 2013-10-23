@@ -1,0 +1,21 @@
+!!!
+%html{'lang' => 'ja'}
+	%head
+		%meta{'http-equiv' => 'content', :content => 'text/html; charset=utf-8'}
+		%title #{@title}
+		%link{ :rel => "stylesheet", :href=> "./stylesheets/main.css" }
+	%body
+		%table.reservation
+			- @reservation.each do |r|
+				%tr
+					%td #{r.get_physical_channel}ch.
+					%td #{@timed.desc(r.get_range.begin)}
+					%td #{@timed.desc_hms(r.get_range.end)}
+					%td #{r.get_range.end.getlocal - r.get_range.begin.getlocal}sec.
+					%td #{r.get_file_path}
+					%td #{r.id}
+					%td
+						%textarea{ :type => "textarea", :rows => "5", :cols => "100" }
+							- r.get_log.each do |log_hash|
+								#{log_hash["time"].getlocal} |#{log_hash["message"]}
+								\

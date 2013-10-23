@@ -1,0 +1,25 @@
+!!!
+%html{'lang' => 'ja'}
+	%head
+		%meta{'http-equiv' => 'content', :content => 'text/html; charset=utf-8'}
+		%title #{@title}
+		%link{ :rel => "stylesheet", :href=> "./stylesheets/main.css" }
+	%body
+		%h1 番組件数
+		#{@program.size}件
+
+		%h1 地上波
+		%table.channel
+			- @channel.select{|c| c.terrestrial?}.each do |c|
+				%tr
+					%td #{c.get_physical_channel}ch.
+					%td #{c.get_channel_epg_id}
+					%td #{c.get_channel_epg.get_name}
+
+		%h1 BS
+		%table.channel
+			- @channel.select{|c| c.bs?}.each do |c|
+				%tr
+					%td #{c.get_physical_channel}ch.
+					%td #{c.get_channel_epg_id}
+					%td #{c.get_channel_epg.get_name}

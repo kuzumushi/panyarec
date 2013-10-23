@@ -1,0 +1,15 @@
+!!!
+%html{'lang' => 'ja'}
+	%head
+		%meta{'http-equiv' => 'content', :content => 'text/html; charset=utf-8'}
+		%title #{@title}
+		%link{ :rel => "stylesheet", :href=> "./stylesheets/main.css" }
+	%body
+		%table
+			- @log.each do |log|
+				%tr
+					%td #{log.read("name")}
+					%td #{log.read("time")}
+					%td #{log.read("message")}
+					%td #{log.read("detail")}
+

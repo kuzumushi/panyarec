@@ -1,0 +1,106 @@
+!!!
+%html{'lang' => 'ja'}
+  %head
+    - @top_origin = 30
+    %meta{'http-equiv' => 'content', :content => 'text/html; charset=utf-8'}
+    %title #{@title}
+    %link{ :rel => "stylesheet", :href=> "../../stylesheets/top.css" }
+    %script{ :src => "../../js/jquery.js" }
+    %script{ :src => "../../js/top.js" }
+    %style
+      div .category_ { background-color: white; }
+      - @category_color_hash.each do |category_id, color|
+        div .category_#{category_id} { background-color: #{color}; }
+    :javascript
+      var type       = "#{@type}";
+      var barHeight  = #{@timed.sub_div_pos(@edge, @origin, 30)};
+      var channelNum = #{@channel.size};
+      var originTop  = #{@top_origin};
+      var originTime = new Date();
+          originTime.setTime(Date.parse("#{@timed.for_js_parse(@origin)}"));
+
+  %body
+    %div#head
+      %div#first_line
+        %div#time
+          2013年9月14日(土) 13:36:50
+        %div#menu
+          録画予約一覧 ||
+          <span class="open_recorded_view">録画済一覧</span> ||
+          <span class="open_log_view">ログ一覧</span> ||
+          <span class="open_category_view">カテゴリ一覧</span> ||
+          <span class="open_environment_setting">環境設定</span>
+        %div#rec_view
+          録画中：　恋愛ラボ　＃１１　【字】
+    %div#scroll_window
+      %div#program_table
+        %div#now_time_horizon
+        %div#search_box
+          %input#search_text{ :type => "text" }
+        %div.time_bar{ :id => "time_bar_left", :class => "bar" }
+          %div#scroll_back
+            ▲
+          - @timed.make_time_tiles(@origin, @edge, 60, 30).each do |tt|
+            %div.time_tile{ :style => "top:#{tt["top"] + @top_origin}px;height:#{tt["height"]}px;" }
+              #{@timed.desc_hm(tt["index_time"]) if tt["height"] > 20}
+        - @channel.inject(0) do |left, c|
+          %div.channel_bar{ :id => c.id.to_s, :class => "bar" }
+            %div.channel_title
+              %div.button{ :class => "left_button" } &lt;
+              %div.title #{c.get_channel_epg.get_name}
+              %div.button{ :class => "right_button" } &gt;
+              %div.delete 番組表から削除
+              %div.view リアルタイム視聴
+            %div.now_time_horizon
+            - @program.select{|p| p.get_channel_id == c.id}.sort{|p1,p2| p1.get_start_time <=> p2.get_start_time}.each do |p|
+              - @top    = @timed.sub_div_pos(p.get_start_time, @origin, 30)
+              - @height = @timed.sub_div_pos(p.get_end_time, p.get_start_time, 30)
+              %div.program_tile{ :class => "category_" + p.get_first_category_id.to_s, :id => p.id.to_s, :style => "top:#{@top + @top_origin}px;height:#{@height}px;" }
+                %div.title #{p.get_program_epg.get_title}
+                %div.time #{@timed.desc_hm(p.get_start_time)}～(#{@timed.len_hm(p.get_start_time, p.get_end_time)})
+          - left + 150
+    %div#dash_board
+      %div#program_search_list
+        %div.head
+          %div.title
+            %img{ :src => "./img/search.gif", :id => "search_head_img" }
+            番組検索
+          %div.search_set
+            %select#program_search_channel
+              %option{ :value => "" } チャンネル指定なし
+
+          %div.close_button 閉じる
+        %div.list
+        %div.foot
+          %div#program_search_result_view
+      
+      %div#category_view
+        %div.head
+          %div.title
+            カテゴリ一覧
+          %div.close_button 閉じる
+        %div.list
+          
+      %div#log_view
+        %div.head
+          %div.title
+            ログ一覧
+          %div.close_button 閉じる
+        %div.list
+        %div.foot
+          %div#log_result
+          
+      %div#reservation_view
+        %div.head
+          %div.title
+            録画予約一覧
+          %div.close_button 閉じる
+        %div.list
+       
+      %div#recorded_view
+        %div.head
+          %div.title
+            録画済一覧
+          %div.close_button 閉じる
+        %div.list
+

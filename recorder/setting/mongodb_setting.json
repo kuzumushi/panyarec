@@ -1,0 +1,6 @@
+/* MongoDB接続用セッティング(JSON形式) */
+{
+	"mongo_addr"   : "localhost",
+	"mongo_port"   : 27017,
+	"mongo_dbname" : "ruby_recorder"
+}

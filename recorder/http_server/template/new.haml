@@ -1,0 +1,41 @@
+!!!
+%html{'lang' => 'ja'}
+	%head
+		%meta{'http-equiv' => 'content', :content => 'text/html; charset=utf-8'}
+		%title #{@title}
+		%script{ :src => "./js/jquery.js" }
+		:javascript
+			var channel_scan = function(caller){
+				caller.disabled = true;
+				caller.value = "開始中...";
+				$.getJSON("./json/channel_scan.json", function(data){
+					alert(data.message);
+					caller.value = "開始済";
+					var reloadProcessRest = function(){
+						$.getJSON("./json/channel_scan_get_process.json", function(data){
+							caller.value = "開始済(残り" + data.rest_count + "件を処理中)";
+							if(data.rest_count > 0){
+								setTimeout(reloadProcessRest, 3000)
+							}
+						});
+					}
+					reloadProcessRest();
+				});
+			}
+
+	%body
+		%h1 #{@title}
+		%ul
+			%li
+				%div.step1
+					STEP1<br>
+					%a{ :href => "./setting" }環境設定
+					の確認
+			%li
+				%div.step2
+					STEP2<br>
+					チャンネルスキャン
+					%input{ :type => "button", :value => "開始", :onclick => "channel_scan(this)" }
+		%div.links
+			%a{ :href => "./log" }log
+			%a{ :href => "./reservation" }reservation
